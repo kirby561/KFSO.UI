@@ -23,7 +23,7 @@ namespace DockablePanels {
         /// </summary>
         /// <param name="station">The station to add.</param>
         public void AddDockStation(DockStation station) {
-            _dockStations.AddLast(station);
+            station.DockManager = this;
         }
 
         /// <summary>
@@ -31,6 +31,22 @@ namespace DockablePanels {
         /// </summary>
         /// <param name="station">The station to remove.</param>
         public void RemoveDockStation(DockStation station) {
+            station.DockManager = null;
+        }
+
+        /// <summary>
+        /// Called by DockStation to link itself to this manager.
+        /// </summary>
+        /// <param name="station">The station that is linking itself.</param>
+        internal void LinkDockStation(DockStation station) {
+            _dockStations.AddLast(station);
+        }
+
+        /// <summary>
+        /// Called by DockStation to unlink itself from this manager.
+        /// </summary>
+        /// <param name="station">The station that is unlinking itself.</param>
+        internal void UnlinkDockStation(DockStation station) {
             _dockStations.Remove(station);
         }
 
@@ -47,7 +63,7 @@ namespace DockablePanels {
                 Point centerScreen = station.GetCenterScreen();
                 Vector distance = centerScreen - locationScreen;
                 double lengthSquared = distance.LengthSquared;
-                if (lengthSquared > DockDistanceSquared) {
+                if (lengthSquared < DockDistanceSquared) {
                     if (lengthSquared < closestDistanceSquared) {
                         closestDistanceSquared = lengthSquared;
                         closestStation = station;
@@ -56,6 +72,14 @@ namespace DockablePanels {
             }
 
             return closestStation;
+        }
+
+        /// <summary>
+        /// Assigns this manager to every DockStation and DockablePanel in the given window.
+        /// </summary>
+        /// <param name="window">The window to assign.</param>
+        public void UseDockManagerForWindow(Window window) {
+            // ?? TODO
         }
     }
 }

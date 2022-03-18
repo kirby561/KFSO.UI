@@ -8,8 +8,27 @@ using System.Windows.Shapes;
 
 namespace DockablePanels {
     public class DockStation : Grid {
+        private DockManager _dockManager;
         private bool _previewActive = false;
         private Rectangle _previewRect = null;
+
+        public DockManager DockManager {
+            get {
+                return _dockManager;
+            }
+            set {
+                DockManager oldManager = _dockManager;
+                _dockManager = value;
+
+                if (oldManager != null)
+                    oldManager.UnlinkDockStation(this);
+                _dockManager.LinkDockStation(this);
+            }
+        }
+
+        public DockStation() : base() {
+            DockManager = new DockManager();
+        }
 
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved) {
             // Call base function
@@ -26,10 +45,15 @@ namespace DockablePanels {
             Children.Remove(panel);
         }
 
-        public void UpdatePanels() {
+        private void UpdatePanels() {
             RowDefinitions.Clear();
 
-            foreach (DockablePanel panel in Children) {
+            foreach (UIElement uiElement in Children) {
+                DockablePanel panel = uiElement as DockablePanel;
+
+                // The panel can be null because UpdatePanels is called mid-update
+                // and it seems like WPF sets children to null first before removing them
+                // entirely so we just treat that as being removed already
                 if (panel != null) {
                     RowDefinition rowDefinition = new RowDefinition();
                     rowDefinition.Height = new GridLength(1, GridUnitType.Star);
@@ -43,7 +67,12 @@ namespace DockablePanels {
             }
 
             int row = 0;
-            foreach (DockablePanel panel in Children) {
+            foreach (UIElement uiElement in Children) {
+                DockablePanel panel = uiElement as DockablePanel;
+
+                // The panel can be null because UpdatePanels is called mid-update
+                // and it seems like WPF sets children to null first before removing them
+                // entirely so we just treat that as being removed already
                 if (panel != null) {
                     Grid.SetRow(panel, row);
                     row++;
@@ -52,15 +81,7 @@ namespace DockablePanels {
 
             // Is there a preview right now?
             if (_previewActive) {
-                if (_previewRect == null) {
-                    _previewRect = new Rectangle();
-                    _previewRect.Fill = new SolidColorBrush(Colors.LightBlue);
-                    Children.Add(_previewRect);
-                }
                 Grid.SetRow(_previewRect, row);
-            } else if (_previewRect != null) {
-                Children.Remove(_previewRect);
-                _previewRect = null;
             }
         }
 
@@ -68,17 +89,22 @@ namespace DockablePanels {
         public Point GetCenterScreen() {
             double width = ActualWidth;
             double height = ActualHeight;
-            return PointToScreen(new Point(width / 2, Height / 2));
+            return PointToScreen(new Point(width / 2, height / 2));
         }
 
         public void PreviewDock(DockablePanel panel) {
-            _previewActive = true;
-            UpdatePanels();
+            if (_previewRect == null) {
+                _previewActive = true;
+                _previewRect = new Rectangle();
+                _previewRect.Fill = new SolidColorBrush(Colors.LightBlue);
+                Children.Add(_previewRect);
+            }
         }
 
         public void CancelDockPreview(DockablePanel panel) {
             _previewActive = false;
-            UpdatePanels();
+            Children.Remove(_previewRect);
+            _previewRect = null;
         }
     }
 }

@@ -30,10 +30,15 @@ namespace DockablePanels {
                 return _hostedPanel;
             }
             set {
+                if (_hostedPanel != null)
+                    _contentHost.Children.Remove(_hostedPanel);
                 _hostedPanel = value;
-                _contentHost.Children.Add(_hostedPanel);
-                Width = _hostedPanel.ActualWidth;
-                Height = _hostedPanel.ActualHeight;
+
+                if (_hostedPanel != null) {
+                    _contentHost.Children.Add(_hostedPanel);
+                    Width = _hostedPanel.ActualWidth;
+                    Height = _hostedPanel.ActualHeight;
+                }
             }
         }
     }

@@ -27,8 +27,8 @@
             Grid.Row="0" 
             Grid.ColumnSpan="3" 
             Fill="#666666" />
-        <TextBlock Name="_titleTextBox" IsHitTestVisible="false" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" TextAlignment="Center" Text="Title" />
-        <Image Name="_pinButton" Grid.Column="1" Grid.Row="0" Source="Images/push-pin-active-small.png" Margin="5" />
+        <TextBlock Name="_titleTextBox" IsHitTestVisible="false" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="25 5 25 5" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" TextAlignment="Center" Text="Title" />
+        <Image Name="_pinButton" Visibility="Hidden" Grid.Column="1" Grid.Row="0" Source="Images/push-pin-active-small.png" Margin="5" />
         <Image Name="_closeButton" MouseUp="_closeButton_MouseUp"  Grid.Column="2" Grid.Row="0" Source="Images/cross-small.png" Margin="5" />
         
         <!-- Content -->

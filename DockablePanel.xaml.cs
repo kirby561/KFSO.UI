@@ -24,10 +24,13 @@ namespace DockablePanels {
         private Point _panelStartPositionScreen;
         private bool _isDragging = false;
         private bool _mouseDown = false;
+        private DockStation _previewStation = null; // Set to non-null if we're previewing in a DockStation
 
         public DockablePanel() {
             InitializeComponent();
         }
+
+        public DockManager DockManager { get; set; }
 
         /// <summary>
         /// Gets or sets the content to display in this DockablePanel.
@@ -74,6 +77,16 @@ namespace DockablePanels {
 
             // Uncapture the mouse since we're done
             Mouse.Capture(null);
+
+            // If we're previewing into a station, remove that
+            // and dock with it now.
+            if (_previewStation != null) {
+                DockStation station = _previewStation;
+                _previewStation.CancelDockPreview(this);
+                _previewStation = null;
+
+                Dock(station);
+            }
         }
 
         private void _titleBarBackground_MouseMove(object sender, MouseEventArgs e) {
@@ -107,6 +120,7 @@ namespace DockablePanels {
                         _floatingWindow.HostedPanel = this;
                         _floatingWindow.Left = panelStartPositionWpf.X;
                         _floatingWindow.Top = panelStartPositionWpf.Y;
+                        _floatingWindow.Title = TitleText;
                         _floatingWindow.Show();
 
                         // Capture the mouse so that you can't lose the window while dragging and we will get
@@ -134,7 +148,40 @@ namespace DockablePanels {
                 // Move the window
                 _floatingWindow.Left = newPanelPositionWpf.X;
                 _floatingWindow.Top = newPanelPositionWpf.Y;
+
+                // Check with the manager if there's any panels we can dock with
+                if (DockManager != null) {
+                    DockStation nearestStation = DockManager.GetClosestDockInRangeTo(position);
+                    if (nearestStation != null && _previewStation == null) {
+                        _previewStation = nearestStation;
+                        nearestStation.PreviewDock(this);
+                    } else if (nearestStation == null && _previewStation != null) {
+                        _previewStation.CancelDockPreview(this);
+                        _previewStation = null;
+                    }
+                }
             }
+        }
+
+        /// <summary>
+        /// Docks this panel into the given station.
+        /// </summary>
+        /// <param name="station">The station to dock with.</param>
+        public void Dock(DockStation station) {
+            // First check if we're in a floating window
+            if (_floatingWindow != null) {
+                // Remove us from the floating window and destroy
+                // it first
+                _floatingWindow.HostedPanel = null;
+                _floatingWindow.Close();
+                _floatingWindow = null;
+            }
+
+            station.Dock(this);
+
+            // If a dock manager wasn't explicitly set yet,
+            // initialize to this station's manager.
+            DockManager = station.DockManager;
         }
 
         /// <summary>
@@ -145,6 +192,12 @@ namespace DockablePanels {
             DockStation station = Parent as DockStation;
             station.Undock(this);
             _pinButton.Visibility = Visibility.Hidden;
+
+            if (DockManager == null) {
+                // Use the same dock manager as our parent if we're being detached
+                // and don't have one yet.
+                DockManager = station.DockManager;
+            }
         }
 
         /// <summary>

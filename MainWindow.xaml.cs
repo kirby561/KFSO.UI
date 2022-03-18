@@ -18,12 +18,14 @@ namespace DockablePanels {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        // Allow any panel to dock anywhere in this window
+        private DockManager _dockManager = new DockManager();
+
         public MainWindow() {
             InitializeComponent();
+
+            _dockPanelSpot2.DockManager = _dockPanelSpot.DockManager;
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e) {
-            _dockPanelSpot.UpdatePanels();
-        }
     }
 }
