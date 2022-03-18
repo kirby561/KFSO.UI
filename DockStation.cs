@@ -37,10 +37,19 @@ namespace DockablePanels {
             UpdatePanels();
         }
 
+        /// <summary>
+        /// Docks the given panel with this station.
+        /// It will be added to the end.
+        /// </summary>
+        /// <param name="panel">The panel to dock.</param>
         public void Dock(DockablePanel panel) {
             Children.Add(panel);
         }
 
+        /// <summary>
+        /// Undocks the given panel with this sation.
+        /// </summary>
+        /// <param name="panel">The panel to undock.</param>
         public void Undock(DockablePanel panel) {
             Children.Remove(panel);
         }
@@ -61,11 +70,6 @@ namespace DockablePanels {
                 }
             }
 
-            if (_previewActive) {
-                RowDefinition previewDefinition = new RowDefinition();
-                previewDefinition.Height = new GridLength(1, GridUnitType.Star);
-            }
-
             int row = 0;
             foreach (UIElement uiElement in Children) {
                 DockablePanel panel = uiElement as DockablePanel;
@@ -81,6 +85,9 @@ namespace DockablePanels {
 
             // Is there a preview right now?
             if (_previewActive) {
+                RowDefinition previewDefinition = new RowDefinition();
+                previewDefinition.Height = new GridLength(1, GridUnitType.Star);
+                RowDefinitions.Add(previewDefinition);
                 Grid.SetRow(_previewRect, row);
             }
         }
