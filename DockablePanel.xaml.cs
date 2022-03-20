@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DockablePanels {
+namespace KFSO.UI.DockablePanels {
     /// <summary>
     /// A DockablePanel is a control that can be used to wrap another control
     /// to make it dockable and undockable from DockStations. To use it, create one,

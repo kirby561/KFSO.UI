@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace DockablePanels {
+namespace KFSO.UI.DockablePanels {
     /// <summary>
     /// A DockStation represents a place where panels can be docked.
     /// It is intended that its children will be DockablePanels which
@@ -34,6 +34,7 @@ namespace DockablePanels {
     ///     </local:DockStation>
     /// </summary>
     public class DockStation : Grid {
+        // Members
         private DockManager _dockManager;
         private bool _previewActive = false;
         private Rectangle _previewRect = null;
@@ -59,6 +60,18 @@ namespace DockablePanels {
             }
         }
 
+        /// <summary>
+        /// The delegate to call when the children in this panel have changed.
+        /// </summary>
+        /// <param name="dockStation">The dockstation (this) for convenience.</param>
+        public delegate void ChildrenChangedEventHandler(DockStation dockStation);
+
+        /// <summary>
+        /// Called when the children of this station are changed.
+        /// Use GetDockedPanels() to see what is docked and how many there are.
+        /// </summary>
+        public event ChildrenChangedEventHandler ChildrenChanged;
+
         public DockStation() : base() {
             DockManager = new DockManager();
         }
@@ -68,6 +81,25 @@ namespace DockablePanels {
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
 
             UpdatePanels();
+            if (ChildrenChanged != null) {
+                ChildrenChanged(this);
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of panels currently docked with this station.
+        /// </summary>
+        /// <returns>The list of panels. If there are no docked panels an empty list is returned.</returns>
+        public List<DockablePanel> GetDockedPanels() {
+            var panels = new List<DockablePanel>();
+
+            foreach (UIElement uiElement in Children) {
+                DockablePanel panel = uiElement as DockablePanel;
+                if (panel != null)
+                    panels.Add(panel);
+            }
+
+            return panels;
         }
 
         /// <summary>

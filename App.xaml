@@ -1,7 +1,7 @@
-﻿<Application x:Class="DockablePanels.App"
+﻿<Application x:Class="KFSO.UI.DockablePanels.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DockablePanels"
+             xmlns:local="clr-namespace:KFSO.UI.DockablePanels"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

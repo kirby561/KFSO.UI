@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace DockablePanels {
+namespace KFSO.UI.DockablePanels {
     /// <summary>
     /// Manages the list of dockable sections in a window (or across windows).
     /// The manager is given to each DockablePanel so it can handle docking into

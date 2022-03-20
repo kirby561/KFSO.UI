@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace DockablePanels {
+namespace KFSO.UI.DockablePanels {
     /// <summary>
     /// A Window that hosts a DockablePanel when it is floating
     /// and not docked into any DockStation.

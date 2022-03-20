@@ -13,9 +13,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DockablePanels {
+namespace KFSO.UI.DockablePanels {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// This is the main window to demonstrate the docking 
+    /// features and how to use them. 
     /// </summary>
     public partial class MainWindow : Window {
         // Allow any panel to dock anywhere in this window
@@ -26,7 +27,17 @@ namespace DockablePanels {
 
             // Make all dock stations in this window use this manager.
             _dockManager.UseDockManagerForTree(this);
+            _dockPanelSpot.ChildrenChanged += OnStationChildrenChanged;
+            _dockPanelSpot2.ChildrenChanged += OnStationChildrenChanged;
         }
 
+        private void OnStationChildrenChanged(DockStation station) {
+            List<DockablePanel> panels = station.GetDockedPanels();
+            // Make the panels auto-hide when there's no children in them.
+            if (panels.Count == 0) {
+                Grid parent = station.Parent as Grid;
+                parent.ColumnDefinitions[Grid.GetColumn(station)].Width = new GridLength(0, GridUnitType.Auto);
+            }
+        }
     }
 }
