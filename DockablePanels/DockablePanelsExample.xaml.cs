@@ -18,11 +18,11 @@ namespace KFSO.UI.DockablePanels {
     /// This is the main window to demonstrate the docking 
     /// features and how to use them. 
     /// </summary>
-    public partial class MainWindow : Window {
+    public partial class DockablePanelsExample : Window {
         // Allow any panel to dock anywhere in this window
         private DockManager _dockManager = new DockManager();
 
-        public MainWindow() {
+        public DockablePanelsExample() {
             InitializeComponent();
 
             // Make all dock stations in this window use this manager.
