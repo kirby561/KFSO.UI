@@ -24,7 +24,7 @@
             </MenuItem>
         </Menu>
 
-        <local:DockStation x:Name="_dockPanelSpot" Grid.Row="1" Grid.Column="0" MinWidth="50" MinHeight="1" Background="Red">
+        <local:DockStation x:Name="_dockPanelSpot" Grid.Row="1" Grid.Column="0" MinWidth="0" MinHeight="1" Background="Red">
             <local:DockablePanel TitleText="Controls">
                 <local:DockablePanel.HostedContent>
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Background="#cccccc" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -55,7 +55,7 @@
 
         <GridSplitter Grid.Column="3" Grid.Row="1" HorizontalAlignment="Stretch" />
 
-        <local:DockStation x:Name="_dockPanelSpot2" Grid.Row="1" Grid.Column="4" MinWidth="50" MinHeight="1" Background="Purple">
+        <local:DockStation x:Name="_dockPanelSpot2" Grid.Row="1" Grid.Column="4" MinWidth="0" MinHeight="1" Background="Purple">
         </local:DockStation>
     </Grid>
 </Window>

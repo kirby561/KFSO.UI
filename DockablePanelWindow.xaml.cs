@@ -12,7 +12,8 @@ using System.Windows.Shapes;
 
 namespace DockablePanels {
     /// <summary>
-    /// Interaction logic for DockablePanelWindow.xaml
+    /// A Window that hosts a DockablePanel when it is floating
+    /// and not docked into any DockStation.
     /// </summary>
     public partial class DockablePanelWindow : Window {
         private DockablePanel _hostedPanel;

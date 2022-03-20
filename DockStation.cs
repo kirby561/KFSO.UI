@@ -7,11 +7,44 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace DockablePanels {
+    /// <summary>
+    /// A DockStation represents a place where panels can be docked.
+    /// It is intended that its children will be DockablePanels which
+    /// can be added programatically or in the xaml file.
+    /// 
+    /// Note that panels can be dragged between DockStations that share the same DockManager.
+    /// The DockManager can be automatically set to be the same for all DockStations in a 
+    /// Window by adding the following after InitializeComponent:
+    ///    DockManager dockManager = new DockManager();
+    ///    dockManager.UseDockManagerForTree(this);
+    /// 
+    /// Example use:
+    ///     <local:DockStation x:Name="_dockPanelSpot" Grid.Row="1" Grid.Column="0" MinWidth="0" MinHeight="1" Background="Red">
+    ///            <local:DockablePanel TitleText="Controls" >
+    ///                <local:DockablePanel.HostedContent>
+    ///                 <ScrollViewer VerticalScrollBarVisibility="Auto" Background="#cccccc" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    ///                     <StackPanel Orientation = "Vertical" HorizontalAlignment="Stretch">
+    ///                         <Button Content="A button" />
+    ///                         < Button Content="Another Button" />
+    ///                         <CheckBox Content="A checkbox" />
+    ///                     </StackPanel >
+    ///                 </ScrollViewer >
+    ///             </local:DockablePanel.HostedContent>
+    ///         </local:DockablePanel>
+    ///     </local:DockStation>
+    /// </summary>
     public class DockStation : Grid {
         private DockManager _dockManager;
         private bool _previewActive = false;
         private Rectangle _previewRect = null;
 
+        /// <summary>
+        /// Gets or sets the DockManager that should be used with
+        /// this station. Stations that share a DockManager will 
+        /// be able to have panels dragged between them. If they
+        /// have different managers then panels taken from one will 
+        /// not be able to be docked in the other.
+        /// </summary>
         public DockManager DockManager {
             get {
                 return _dockManager;
@@ -43,7 +76,7 @@ namespace DockablePanels {
         /// </summary>
         /// <param name="panel">The panel to dock.</param>
         public void Dock(DockablePanel panel) {
-            Children.Add(panel);
+            Children.Add(panel); // This will cause OnVisualChildrenChanged to be called which will adjust the layout
         }
 
         /// <summary>
@@ -51,7 +84,7 @@ namespace DockablePanels {
         /// </summary>
         /// <param name="panel">The panel to undock.</param>
         public void Undock(DockablePanel panel) {
-            Children.Remove(panel);
+            Children.Remove(panel); // This will cause OnVisualChildrenChanged to be called which will adjust the layout
         }
 
         private void UpdatePanels() {
@@ -99,15 +132,37 @@ namespace DockablePanels {
             return PointToScreen(new Point(width / 2, height / 2));
         }
 
+        /// <returns>Returns the top left point in screen coordinates.</returns>
+        public Point GetTopLeftScreen() {
+            return PointToScreen(new Point(0, 0));
+        }
+
+        /// <returns>Returns the bottom left point in screen coordinates.</returns>
+        public Point GetBottomRightScreen() {
+            double width = ActualWidth;
+            double height = ActualHeight;
+            return PointToScreen(new Point(width, height));
+        }
+
+        /// <summary>
+        /// Previews where the panel will go when docked and gives the user a visual indication of
+        /// what will happen when they let go and if they're close enough.
+        /// </summary>
+        /// <param name="panel">The panel to preview.</param>
         public void PreviewDock(DockablePanel panel) {
             if (_previewRect == null) {
                 _previewActive = true;
                 _previewRect = new Rectangle();
+                _previewRect.Width = Math.Max(panel.ActualWidth, ActualWidth);
                 _previewRect.Fill = new SolidColorBrush(Colors.LightBlue);
                 Children.Add(_previewRect);
             }
         }
 
+        /// <summary>
+        /// Cancels/hides the preview from PreviewDock.
+        /// </summary>
+        /// <param name="panel">The panel that was being previewed.</param>
         public void CancelDockPreview(DockablePanel panel) {
             _previewActive = false;
             Children.Remove(_previewRect);

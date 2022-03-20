@@ -6,9 +6,6 @@
         xmlns:local="clr-namespace:DockablePanels"
         WindowStyle="None"
         mc:Ignorable="d"
-        
         Height="450" Width="800">
-    <Grid Name="_contentHost">
-        
-    </Grid>
+    <Grid Name="_contentHost" />
 </Window>

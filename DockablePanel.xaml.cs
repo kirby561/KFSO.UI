@@ -13,7 +13,13 @@ using System.Windows.Shapes;
 
 namespace DockablePanels {
     /// <summary>
-    /// Interaction logic for DockablePanel.xaml
+    /// A DockablePanel is a control that can be used to wrap another control
+    /// to make it dockable and undockable from DockStations. To use it, create one,
+    /// set its HostedContent property to any UIElement, and place it in a DockStation.
+    /// DockablePanels can be dragged out of their hosting DockStation to create a new
+    /// window that contains the panel. They can be dragged back into the DockStation
+    /// they came from or into a new one. Note that DockStations must have the same
+    /// DockManager in order to drag a panel from one station to another.
     /// </summary>
     public partial class DockablePanel : UserControl {
         private UIElement _content;
@@ -30,6 +36,12 @@ namespace DockablePanels {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Gets or sets the DockManager that this panel will use
+        /// to search for DockStations it can dock with. This will
+        /// default to the DockManager of the first DockStation this
+        /// panel is docked to if it is not set before then.
+        /// </summary>
         public DockManager DockManager { get; set; }
 
         /// <summary>
@@ -191,7 +203,6 @@ namespace DockablePanels {
             // Remove this panel from its current parent
             DockStation station = Parent as DockStation;
             station.Undock(this);
-            _pinButton.Visibility = Visibility.Hidden;
 
             if (DockManager == null) {
                 // Use the same dock manager as our parent if we're being detached

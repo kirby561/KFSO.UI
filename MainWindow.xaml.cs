@@ -24,7 +24,8 @@ namespace DockablePanels {
         public MainWindow() {
             InitializeComponent();
 
-            _dockPanelSpot2.DockManager = _dockPanelSpot.DockManager;
+            // Make all dock stations in this window use this manager.
+            _dockManager.UseDockManagerForTree(this);
         }
 
     }
